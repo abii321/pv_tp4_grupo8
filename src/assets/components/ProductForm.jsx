@@ -30,7 +30,7 @@ function ProductForm( { productos, setProductos}) {
     setPrecioConDesc(0);
     setStock(0);
   }
-
+  
   return (
     <div>
       <h1> Productos </h1>

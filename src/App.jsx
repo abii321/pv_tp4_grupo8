@@ -7,6 +7,7 @@ import SearchById from './assets/components/SearchById.jsx'
 function App() {
   const [productos, setProductos] = useState([])
   const [searchId, setSearchId] = useState('');
+  const [productoEditado, setProductoEditado] = useState(null); 
 
 
  const productosFiltrados = useMemo(() => {
@@ -18,16 +19,29 @@ useEffect(() => {
   console.log('Resultado de búsqueda por ID:', productosFiltrados);
 }, [productosFiltrados]);
 
-  return (
-    <>
-      <ProductForm productos={productos} setProductos={setProductos} />
-      <ProductList productos={productos} />
-      <SearchById searchId={searchId} setSearchId={setSearchId} />
-      <ProductList productos={productosFiltrados} />
-      <SearchBar productos={productos} />
-        
-    </>
-  )
+const modificarProducto = (productoModificado) => {
+  setProductos((prevProductos) =>
+    prevProductos.map((producto) =>
+      producto.id === productoModificado.id ? productoModificado : producto
+    )
+  );
+};
+
+return (
+  <>
+    <ProductForm
+      productos={productos}
+      setProductos={setProductos}
+      productoEditado={productoEditado}
+      setProductoEditado={setProductoEditado}
+      onModificar={modificarProducto}
+    />
+    <ProductList productos={productos} setProductoEditado={setProductoEditado} />
+    <SearchById searchId={searchId} setSearchId={setSearchId} />
+    <ProductList productos={productosFiltrados} />
+    <SearchBar productos={productos} />
+  </>
+);
 }
 
 export default App;

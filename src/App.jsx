@@ -11,9 +11,9 @@ function App() {
     <>
       <ProductForm productos={productos} setProductos={setProductos} />
       <ProductList productos={productos} />
-      <SearchById productos={productos} /> 
+      {/**<SearchById productos={productos} /> 
       <ProductList productos={productos} />  
-      <SearchBar productos={productos} />
+      <SearchBar productos={productos} /> **/}
     </>
   );
 }

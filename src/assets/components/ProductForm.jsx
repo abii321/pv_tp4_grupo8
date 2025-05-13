@@ -1,13 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-function ProductForm( { productos, setProductos}) {
-  const [ id, setId] = useState(1);
-  const [ producto, setProducto ] = useState('');
-  const [ descripcion, setDescripcion ] = useState('');
-  const [ precio, setPrecio ] = useState(0);
-  const [ descuento, setDescuento ] = useState(0);
-  const [ precioConDesc, setPrecioConDesc ] =useState(0);
-  const [ stock, setStock ] = useState(0);
+function ProductForm({ productos, setProductos, productoEditado, setProductoEditado }) {
+  const [id, setId] = useState(1);
+  const [producto, setProducto] = useState('');
+  const [descripcion, setDescripcion] = useState('');
+  const [precio, setPrecio] = useState(0);
+  const [descuento, setDescuento] = useState(0);
+  const [precioConDesc, setPrecioConDesc] = useState(0);
+  const [stock, setStock] = useState(0);
+
+  useEffect(() => {
+    if (productoEditado) {
+      setId(productoEditado.id);
+      setProducto(productoEditado.producto);
+      setDescripcion(productoEditado.descripcion);
+      setPrecio(productoEditado.precio);
+      setDescuento(productoEditado.descuento);
+      setPrecioConDesc(productoEditado.precioConDesc);
+      setStock(productoEditado.stock);
+    }
+  }, [productoEditado]);
 
   const agregar = (e) => {
     e.preventDefault();
@@ -17,25 +29,33 @@ function ProductForm( { productos, setProductos}) {
       descripcion,
       precio,
       descuento,
-      precioConDesc: precio-(descuento*precio/100),
-      stock
+      precioConDesc: precio - (descuento * precio) / 100,
+      stock,
     };
 
-    setProductos([...productos, nuevoProducto]);
-    setId(id + 1);
+    if (productoEditado) {
+      setProductos(
+        productos.map((p) => (p.id === productoEditado.id ? nuevoProducto : p))
+      );
+      setProductoEditado(null); 
+    } else {
+      setProductos([...productos, nuevoProducto]);
+      setId(id + 1);
+    }
+
     setProducto('');
     setDescripcion('');
     setPrecio(0);
     setDescuento(0);
     setPrecioConDesc(0);
     setStock(0);
-  }
+  };
 
   return (
     <div>
-      <h1> Productos </h1>
+      <h1>{productoEditado ? "Editar Producto" : "Agregar Producto"}</h1>
       <form onSubmit={agregar}>
-        <label>ID</label>
+      <label>ID</label>
         <input type='number' value={id} onChange={(e) => setId(e.target.value)} disabled/>
         <label>Nombre</label>
         <input type="text" value={producto} placeholder='Ingrese un producto' onChange={(e) => setProducto(e.target.value)} required></input>
@@ -50,11 +70,10 @@ function ProductForm( { productos, setProductos}) {
         <label>Stock</label>
         <input type="number" value={stock} placeholder='Ingrese stock disponible' onChange={(e) => setStock(e.target.value)} required  min ="1"></input>
 
-        <button type="submit" >Agregar</button>
+        <button type="submit">{productoEditado ? "Actualizar" : "Agregar"}</button>
       </form>
-
     </div>
-  )
+  );
 }
 
-export default ProductForm
+export default ProductForm;

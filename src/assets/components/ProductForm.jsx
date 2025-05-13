@@ -49,8 +49,7 @@ function ProductForm({ productos, setProductos, productoEditado, setProductoEdit
     setDescuento(0);
     setPrecioConDesc(0);
     setStock(0);
-  };
-
+  }
   return (
     <div>
       <h1>{productoEditado ? "Editar Producto" : "Agregar Producto"}</h1>

@@ -1,33 +1,36 @@
-import { useState, useMemo, useEffect} from 'react'
-import ProductForm from './assets/components/ProductForm.jsx'
-import ProductList from './assets/components/ProductList.jsx'
-import SearchBar from './assets/components/SearchBar.jsx'
-import SearchById from './assets/components/SearchById.jsx'    
+import { useState, useEffect, useMemo } from 'react';
+import ProductForm from './assets/components/ProductForm.jsx';
+import ProductList from './assets/components/ProductList.jsx';
+import SearchBar from './assets/components/SearchBar.jsx';
+import SearchById from './assets/components/SearchById.jsx';
 
 function App() {
-  const [productos, setProductos] = useState([])
+  const [productos, setProductos] = useState([]);
+  const [productosOriginales, setProductosOriginales] = useState([]);
   const [searchId, setSearchId] = useState('');
 
+  useEffect(() => {
+    setProductosOriginales((prevOriginales) => {
+      return productos.length > prevOriginales.length ? productos : prevOriginales;
+    });
+  }, [productos]);
 
- const productosFiltrados = useMemo(() => {
-  if (searchId === '') return productos;
-  return productos.filter((p) => p.id.toString() === searchId);
-}, [productos, searchId]);
-
-useEffect(() => {
-  console.log('Resultado de búsqueda por ID:', productosFiltrados);
-}, [productosFiltrados]);
+  const productosFiltradosPorId = useMemo(() => {
+    if (searchId === '') return productos;
+    return productos.filter((p) => p.id.toString() === searchId);
+  }, [productos, searchId]);
 
   return (
     <>
       <ProductForm productos={productos} setProductos={setProductos} />
-      <ProductList productos={productos} />
       <SearchById searchId={searchId} setSearchId={setSearchId} />
-      <ProductList productos={productosFiltrados} />
-      <SearchBar productos={productos} />
-        
+      <SearchBar
+        productosOriginales={productosOriginales}
+        setProductos={setProductos}
+      />
+      <ProductList productos={searchId ? productosFiltradosPorId : productos} />
     </>
-  )
+  );
 }
 
 export default App;

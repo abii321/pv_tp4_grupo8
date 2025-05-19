@@ -6,15 +6,13 @@ import SearchById from './assets/components/SearchById.jsx';
 
 function App() {
   const [productos, setProductos] = useState([]); 
-const [productosFiltrados, setProductosFiltrados] = useState([]);
+
   return (
     <>
       <ProductForm productos={productos} setProductos={setProductos} />
-     <ProductList productos={productosFiltrados.length > 0 ? productosFiltrados : productos} />
-     <SearchById productos={productos} setProductosFiltrados={setProductosFiltrados} />
-
-
-     {/** <ProductList productos={productos} />  
+      <ProductList productos={productos} />
+      <SearchById productos={productos} /> 
+      {/**<ProductList productos={productos} />
       <SearchBar productos={productos} /> **/}
     </>
   );

@@ -1,19 +1,21 @@
 import { useState, useEffect } from "react";
 
 function ProductForm({ productos, setProductos, productoEditado, setProductoEditado }) {
+  // Declaracion de elementos del Producto 
   const [id, setId] = useState(1);
   const [producto, setProducto] = useState('');
-  const [descripcion, setDescripcion] = useState('');
+  const [marca, setMarca] = useState('');
   const [precio, setPrecio] = useState(0);
   const [descuento, setDescuento] = useState(0);
   const [precioConDesc, setPrecioConDesc] = useState(0);
   const [stock, setStock] = useState(0);
+  const [estado, setEstado] = useState(true);
 
   useEffect(() => {
     if (productoEditado) {
       setId(productoEditado.id);
       setProducto(productoEditado.producto);
-      setDescripcion(productoEditado.descripcion);
+      setMarca(productoEditado.marca);
       setPrecio(productoEditado.precio);
       setDescuento(productoEditado.descuento);
       setPrecioConDesc(productoEditado.precioConDesc);
@@ -21,12 +23,13 @@ function ProductForm({ productos, setProductos, productoEditado, setProductoEdit
     }
   }, [productoEditado]);
 
+  // Agregar un Producto
   const agregar = (e) => {
     e.preventDefault();
     const nuevoProducto = {
       id,
       producto,
-      descripcion,
+      marca,
       precio,
       descuento,
       precioConDesc: precio - (descuento * precio) / 100,
@@ -44,22 +47,24 @@ function ProductForm({ productos, setProductos, productoEditado, setProductoEdit
     }
 
     setProducto('');
-    setDescripcion('');
+    setMarca('');
     setPrecio(0);
     setDescuento(0);
     setPrecioConDesc(0);
     setStock(0);
   }
+
   return (
     <div>
-      <h1>{productoEditado ? "Editar Producto" : "Agregar Producto"}</h1>
+      {/**<h1>{productoEditado ? "Editar Producto" : "Listado de Productos"}</h1>**/}
+      <h1>Listado de Productos</h1>
       <form onSubmit={agregar}>
       <label>ID</label>
         <input type='number' value={id} onChange={(e) => setId(e.target.value)} disabled/>
         <label>Nombre</label>
         <input type="text" value={producto} placeholder='Ingrese un producto' onChange={(e) => setProducto(e.target.value)} required></input>
-        <label>Descripcion</label>
-        <input type="text" value={descripcion} placeholder='Ingrese la descripcion' onChange={(e) => setDescripcion(e.target.value)} required></input>
+        <label>Marca</label>
+        <input type="text" value={marca} placeholder='Ingrese la descripcion' onChange={(e) => setMarca(e.target.value)} required></input>
         <label>Precio</label>
         <input type="number" value={precio} placeholder='Ingrese precio' onChange={(e) => setPrecio(e.target.value)} required  min ="1"></input>
         <label>Descuento</label>

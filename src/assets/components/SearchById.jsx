@@ -5,6 +5,7 @@ function SearchById({ productos, setProductosFiltrados }) {
   const [modoBuscar, setModoBuscar] = useState(true);
   const [mensajeError, setMensajeError] = useState('');
 
+
   const resultadoMemo = useMemo(() => {
     return productos.filter(p => p.id.toString() === termino);
   }, [productos, termino]);
@@ -46,7 +47,9 @@ function SearchById({ productos, setProductosFiltrados }) {
           onChange={(e) => setTermino(e.target.value)}
           required
         />
+
         <button type="submit">{modoBuscar ? 'Buscar' : 'Limpiar'}</button>
+
       </form>
 
       {mensajeError && <p style={{ color: 'red' }}>{mensajeError}</p>}

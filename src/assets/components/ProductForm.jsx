@@ -1,18 +1,15 @@
 import { useState, useEffect } from "react";
-function ProductForm({ productos, setProductos, productoEditado, setProductoEditado}) {
-  // Declaracion de elementos del Producto 
-  const [id, setId] = useState(1);
+
+function ProductForm({ productos, setProductos, productoEditado, setProductoEditado }) {
   const [producto, setProducto] = useState('');
   const [marca, setMarca] = useState('');
   const [precio, setPrecio] = useState(0);
   const [descuento, setDescuento] = useState(0);
   const [precioConDesc, setPrecioConDesc] = useState(0);
   const [stock, setStock] = useState(0);
-  const [estado, setEstado] = useState(true);
 
   useEffect(() => {
     if (productoEditado) {
-      setId(productoEditado.id);
       setProducto(productoEditado.producto);
       setMarca(productoEditado.marca);
       setPrecio(productoEditado.precio);
@@ -22,29 +19,7 @@ function ProductForm({ productos, setProductos, productoEditado, setProductoEdit
     }
   }, [productoEditado]);
 
-  // Agregar un Producto
-  const agregar = (e) => {
-    e.preventDefault();
-    const nuevoProducto = {
-      id,
-      producto,
-      marca,
-      precio,
-      descuento,
-      precioConDesc: precio - (descuento * precio) / 100,
-      stock,
-    };
-
-    if (productoEditado) {
-      setProductos(
-        productos.map((p) => (p.id === productoEditado.id ? nuevoProducto : p))
-      );
-      setProductoEditado(null); 
-    } else {
-      setProductos([...productos, nuevoProducto]);
-      setId(id + 1);
-    }
-
+  const limpiarFormulario = () => {
     setProducto('');
     setMarca('');
     setPrecio(0);
@@ -52,26 +27,63 @@ function ProductForm({ productos, setProductos, productoEditado, setProductoEdit
     setPrecioConDesc(0);
     setStock(0);
   }
-  
-return (
+
+  const agregar = (e) => {
+    e.preventDefault();
+
+    const nuevoPrecioConDesc = precio - (descuento * precio) / 100;
+
+    const nuevoProducto = {
+      id: productoEditado
+        ? productoEditado.id
+        : productos.length > 0
+        ? Math.max(...productos.map(p => p.id)) + 1
+        : 1,
+      producto,
+      marca,
+      precio,
+      descuento,
+      precioConDesc: nuevoPrecioConDesc,
+      stock,
+    };
+
+    if (productoEditado) {
+      setProductos(
+        productos.map((p) =>
+          p.id === productoEditado.id ? nuevoProducto : p
+        )
+      );
+      setProductoEditado(null);
+    } else {
+      setProductos([...productos, nuevoProducto]);
+    }
+
+    limpiarFormulario();
+  }
+
+  return (
     <div>
-      {/**<h1>{productoEditado ? "Editar Producto" : "Listado de Productos"}</h1>**/}
       <h1>Listado de Productos</h1>
       <form onSubmit={agregar}>
-      <label>ID</label>
-        <input type='number' value={id} onChange={(e) => setId(e.target.value)} disabled/>
+        <label>ID</label>
+        <input
+          type="text"
+          value={
+        productoEditado ? productoEditado.id : productos.length > 0 ? Math.max(...productos.map(p => p.id)) + 1 : 1 }
+        disabled
+        />
         <label>Nombre</label>
-        <input type="text" value={producto} placeholder='Ingrese un producto' onChange={(e) => setProducto(e.target.value)} required></input>
+        <input type="text" value={producto} onChange={(e) => setProducto(e.target.value)} required />
         <label>Marca</label>
-        <input type="text" value={marca} placeholder='Ingrese la descripcion' onChange={(e) => setMarca(e.target.value)} required></input>
+        <input type="text" value={marca} onChange={(e) => setMarca(e.target.value)} required />
         <label>Precio</label>
-        <input type="number" value={precio} placeholder='Ingrese precio' onChange={(e) => setPrecio(e.target.value)} required  min ="1"></input>
-        <label>Descuento</label>
-        <input type="number" value={descuento} placeholder='Ingrese descuento' onChange={(e) => setDescuento(e.target.value)} required></input>
+        <input type="number" value={precio} onChange={(e) => setPrecio(Number(e.target.value))} required min="1" />
+        <label>Descuento (%)</label>
+        <input type="number" value={descuento} onChange={(e) => setDescuento(Number(e.target.value))} required />
         <label>Precio con Descuento</label>
-        <input type="number" value={precio-descuento*precio/100} onChange={(e) => setPrecioConDesc(e.target.value)} disabled></input>
+        <input type="number" value={precio - descuento * precio / 100} disabled />
         <label>Stock</label>
-        <input type="number" value={stock} placeholder='Ingrese stock disponible' onChange={(e) => setStock(e.target.value)} required  min ="1"></input>
+        <input type="number" value={stock} onChange={(e) => setStock(Number(e.target.value))} required min="1" />
 
         <button type="submit">{productoEditado ? "Actualizar" : "Agregar"}</button>
       </form>

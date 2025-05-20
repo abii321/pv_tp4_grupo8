@@ -8,6 +8,8 @@ function App() {
   const [productos, setProductos] = useState([]);
   const [productosOriginales, setProductosOriginales] = useState([]);
 const [productosFiltrados, setProductosFiltrados] = useState([]);
+const [productoEditado, setProductoEditado] = useState(null);
+
 
   useEffect(() => {
     setProductosOriginales((prevOriginales) => {
@@ -21,14 +23,15 @@ const eliminarProducto = useCallback((id) => {
 
   return (
     <>
-      <ProductForm productos={productos} setProductos={setProductos} />
+      <ProductForm productos={productos} setProductos={setProductos} productoEditado={productoEditado} setProductoEditado={setProductoEditado}
+    />
         <SearchById productos={productos} setProductosFiltrados={setProductosFiltrados} />
       <SearchBar
         productosOriginales={productosOriginales}
         setProductos={setProductos}
       />
       <ProductList  productos={ (productosFiltrados.length > 0  ? productosFiltrados  : productos ).filter(p => p.estado !== false)
-  } eliminarProducto={eliminarProducto}  SetProductos={setProductos} 
+  } eliminarProducto={eliminarProducto}  SetProductos={setProductos} setProductoEditado={setProductoEditado}
 />  
     </>
   );

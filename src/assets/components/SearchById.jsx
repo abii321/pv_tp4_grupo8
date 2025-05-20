@@ -1,40 +1,48 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 
-function SearchById({ productos }) {
+function SearchById({ productos, setProductosFiltrados }) {
   const [termino, setTermino] = useState('');
-  const [buscar, setBuscar] = useState('');
+  const [modoBuscar, setModoBuscar] = useState(true);
 
-  const productosFiltrados = useMemo(() => {
-    if (buscar === '') return [];
-    return productos.filter(p => p.id.toString() === buscar);
-  }, [productos, buscar]);
+  
+  const resultadoMemo = useMemo(() => {
+    return productos.filter(p => p.id.toString() === termino);
+  }, [productos, termino]);
 
+  
+  useEffect(() => {
+    if (!modoBuscar && termino !== '') {
+      console.log('Resultado de búsqueda por ID:', resultadoMemo);
+    }
+  }, [resultadoMemo, modoBuscar, termino]);
+
+  
   const handleSubmit = (e) => {
     e.preventDefault();
-    setBuscar(termino);
+
+    if (modoBuscar) {
+      setProductosFiltrados(resultadoMemo);
+      console.log('Filtro aplicado, resultado:', resultadoMemo);
+      setModoBuscar(false);
+    } else {
+      setProductosFiltrados([]);
+      setTermino('');
+      setModoBuscar(true);
+    }
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="number"
-          placeholder="Buscar por ID"
-          value={termino}
-          onChange={(e) => setTermino(e.target.value)}
-        />
-        <button type="submit">Buscar</button> {/* ✅ Este es el botón */}
-      </form>
-
-      <ul>
-        {productosFiltrados.map(p => (
-          <li key={p.id}>
-            {p.id} - {p.producto} - {p.descripcion} - ${p.precio} - {p.descuento}% - ${p.precioConDesc} - {p.stock}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <input
+        type="number"
+        placeholder="Buscar por ID"
+        value={termino}
+        onChange={(e) => setTermino(e.target.value)}
+        required
+      />
+      <button type="submit">{modoBuscar ? 'Buscar' : 'Limpiar'}</button>
+    </form>
   );
 }
 
-export default SearchById;
+export default SearchById; 

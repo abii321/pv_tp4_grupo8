@@ -8,27 +8,36 @@ function App() {
   const [productos, setProductos] = useState([]);
   const [productosOriginales, setProductosOriginales] = useState([]);
   const [searchId, setSearchId] = useState('');
+  const [vistaActual, setVistaActual] = useState('general'); // 'general' | 'descripcion' | 'id'
 
   useEffect(() => {
-    setProductosOriginales((prevOriginales) => {
-      return productos.length > prevOriginales.length ? productos : prevOriginales;
-    });
+    setProductosOriginales((prevOriginales) =>
+      productos.length > prevOriginales.length ? productos : prevOriginales
+    );
   }, [productos]);
 
   const productosFiltradosPorId = useMemo(() => {
-    if (searchId === '') return productos;
+    if (searchId === '') return [];
     return productos.filter((p) => p.id.toString() === searchId);
   }, [productos, searchId]);
+
+  // Decidir qué lista mostrar
+  const productosParaMostrar = useMemo(() => {
+    if (vistaActual === 'id') return productosFiltradosPorId;
+    return productos;
+  }, [vistaActual, productos, productosFiltradosPorId]);
 
   return (
     <>
       <ProductForm productos={productos} setProductos={setProductos} />
-      <SearchById searchId={searchId} setSearchId={setSearchId} />
+      <SearchById productos={productos} />
       <SearchBar
         productosOriginales={productosOriginales}
         setProductos={setProductos}
+        setSearchId={setSearchId}
+        setVistaActual={setVistaActual}
       />
-      <ProductList productos={searchId ? productosFiltradosPorId : productos} />
+      <ProductList productos={productosParaMostrar} />
     </>
   );
 }

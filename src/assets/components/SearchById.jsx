@@ -5,8 +5,8 @@ function SearchById({ productos }) {
   const [buscar, setBuscar] = useState('');
 
   const productosFiltrados = useMemo(() => {
-    if (buscar === '') return [];
-    return productos.filter(p => p.id.toString() === buscar);
+    if (!buscar) return [];
+    return (productos || []).filter(p => p.id.toString() === buscar);
   }, [productos, buscar]);
 
   const handleSubmit = (e) => {
@@ -23,7 +23,7 @@ function SearchById({ productos }) {
           value={termino}
           onChange={(e) => setTermino(e.target.value)}
         />
-        <button type="submit">Buscar</button> {/* ✅ Este es el botón */}
+        <button type="submit">Buscar</button>
       </form>
 
       <ul>

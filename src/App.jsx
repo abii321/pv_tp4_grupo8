@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import ProductForm from './assets/components/ProductForm.jsx';
 import ProductList from './assets/components/ProductList.jsx';
 import SearchBar from './assets/components/SearchBar.jsx';
@@ -8,7 +8,9 @@ function App() {
   const [productos, setProductos] = useState([]);
   const [productosOriginales, setProductosOriginales] = useState([]);
   const [searchId, setSearchId] = useState('');
-  const [vistaActual, setVistaActual] = useState('general'); // 'general' | 'descripcion' | 'id'
+  const [vistaActual, setVistaActual] = useState('general');
+const [productosFiltrados, setProductosFiltrados] = useState([]);
+const [productoEditado, setProductoEditado] = useState(null);
 
   useEffect(() => {
     setProductosOriginales((prevOriginales) =>
@@ -16,12 +18,15 @@ function App() {
     );
   }, [productos]);
 
-  const productosFiltradosPorId = useMemo(() => {
-    if (searchId === '') return [];
-    return productos.filter((p) => p.id.toString() === searchId);
-  }, [productos, searchId]);
+ const productosFiltradosPorId = useMemo(() => {
+   if (searchId === '') return [];
+   return productos.filter((p) => p.id.toString() === searchId);
+ }, [productos, searchId]);
+  
+const eliminarProducto = useCallback((id) => {
+    setProductos(productos.map(p => p.id === id ? { ...p, estado: false } : p));
+}, [productos, setProductos]);
 
-  // Decidir qué lista mostrar
   const productosParaMostrar = useMemo(() => {
     if (vistaActual === 'id') return productosFiltradosPorId;
     return productos;
@@ -29,10 +34,14 @@ function App() {
 
   return (
     <>
-      <ProductForm productos={productos} setProductos={setProductos} />
-      <SearchById productos={productos} />
       <SearchBar productosOriginales={productos} setSearchId={setSearchId} />
-      <ProductList productos={productosParaMostrar} />
+      <ProductForm productos={productos} setProductos={setProductos} productoEditado={productoEditado} setProductoEditado={setProductoEditado}
+    />
+        <SearchById productos={productos} setProductosFiltrados={setProductosFiltrados} />
+
+      <ProductList  productos={ (productosFiltrados.length > 0  ? productosFiltrados  : productos ).filter(p => p.estado !== false)
+  } eliminarProducto={eliminarProducto}  SetProductos={setProductos} setProductoEditado={setProductoEditado}
+/>  
     </>
   );
 }

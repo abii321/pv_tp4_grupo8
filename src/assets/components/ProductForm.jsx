@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-
-function ProductForm({ productos, setProductos, productoEditado, setProductoEditado }) {
+function ProductForm({ productos, setProductos, productoEditado, setProductoEditado}) {
   // Declaracion de elementos del Producto 
   const [id, setId] = useState(1);
   const [producto, setProducto] = useState('');
@@ -53,8 +52,8 @@ function ProductForm({ productos, setProductos, productoEditado, setProductoEdit
     setPrecioConDesc(0);
     setStock(0);
   }
-
-  return (
+  
+return (
     <div>
       {/**<h1>{productoEditado ? "Editar Producto" : "Listado de Productos"}</h1>**/}
       <h1>Listado de Productos</h1>

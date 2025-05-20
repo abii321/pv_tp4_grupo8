@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import ProductForm from './assets/components/ProductForm.jsx';
 import ProductList from './assets/components/ProductList.jsx';
 import SearchBar from './assets/components/SearchBar.jsx';
@@ -15,6 +15,9 @@ const [productosFiltrados, setProductosFiltrados] = useState([]);
     });
   }, [productos]);
 
+const eliminarProducto = useCallback((id) => {
+    setProductos(productos.map(p => p.id === id ? { ...p, estado: false } : p));
+}, [productos, setProductos]);
 
   return (
     <>
@@ -24,9 +27,9 @@ const [productosFiltrados, setProductosFiltrados] = useState([]);
         productosOriginales={productosOriginales}
         setProductos={setProductos}
       />
-      <ProductList productos={productosFiltrados.length > 0 ? productosFiltrados : productos} />
-
-  
+      <ProductList  productos={ (productosFiltrados.length > 0  ? productosFiltrados  : productos ).filter(p => p.estado !== false)
+  } eliminarProducto={eliminarProducto}  SetProductos={setProductos} 
+/>  
     </>
   );
 }

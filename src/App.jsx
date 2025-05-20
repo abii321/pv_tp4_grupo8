@@ -34,12 +34,12 @@ const eliminarProducto = useCallback((id) => {
 
   return (
     <>
-      <SearchBar productosOriginales={productos} setSearchId={setSearchId} />
       <ProductForm productos={productos} setProductos={setProductos} productoEditado={productoEditado} setProductoEditado={setProductoEditado}
     />
-        <SearchById productos={productos} setProductosFiltrados={setProductosFiltrados} />
-
+      <SearchById productos={productos} setProductosFiltrados={setProductosFiltrados} />
+      <SearchBar productosOriginales={productos} setSearchId={setSearchId} />
       <ProductList  productos={ (productosFiltrados.length > 0  ? productosFiltrados  : productos ).filter(p => p.estado !== false)
+      
   } eliminarProducto={eliminarProducto}  SetProductos={setProductos} setProductoEditado={setProductoEditado}
 />  
     </>

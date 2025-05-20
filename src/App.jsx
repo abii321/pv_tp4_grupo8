@@ -31,12 +31,7 @@ function App() {
     <>
       <ProductForm productos={productos} setProductos={setProductos} />
       <SearchById productos={productos} />
-      <SearchBar
-        productosOriginales={productosOriginales}
-        setProductos={setProductos}
-        setSearchId={setSearchId}
-        setVistaActual={setVistaActual}
-      />
+      <SearchBar productosOriginales={productos} setSearchId={setSearchId} />
       <ProductList productos={productosParaMostrar} />
     </>
   );

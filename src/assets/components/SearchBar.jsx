@@ -1,43 +1,59 @@
 import { useState, useMemo } from 'react';
 
-function SearchBar({ productosOriginales, setProductos, setSearchId, setVistaActual }) {
+function SearchBar({ productosOriginales, setSearchId }) {
   const [termino, setTermino] = useState('');
-  const [modoBuscar, setModoBuscar] = useState(true); // true = Buscar, false = Limpiar
+  const [buscar, setBuscar] = useState('');
+  const [modoBuscar, setModoBuscar] = useState(true);
 
   const productosFiltrados = useMemo(() => {
-    return productosOriginales.filter(p =>
-      (p.descripcion?.toLowerCase() || '').includes(termino.toLowerCase())
-    );
-  }, [productosOriginales, termino]);
+    if (buscar === '') return [];
+    return productosOriginales.filter(p => {
+      const desc = (p.marca || '').toLowerCase().trim();
+      const valor = buscar.toLowerCase().trim();
+      return desc.includes(valor);
+    });
+  }, [productosOriginales, buscar]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (modoBuscar) {
-      setSearchId('');                  // Limpiamos búsqueda por ID
-      setProductos(productosFiltrados); // Mostramos lo filtrado
-      setVistaActual('descripcion');    // Indicamos que la vista actual es la búsqueda por descripción
+      setSearchId('');
+      setBuscar(termino);
       setModoBuscar(false);
     } else {
-      setProductos(productosOriginales); // Restauramos todo
+      setBuscar('');
       setTermino('');
       setModoBuscar(true);
-      setVistaActual('general');         // Vista vuelve a general
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: '15px' }}>
-      <input
-        type="text"
-        placeholder="Buscar por descripción"
-        value={termino}
-        onChange={(e) => setTermino(e.target.value)}
-      />
-      <button type="submit">
-        {modoBuscar ? 'Buscar' : 'Limpiar'}
-      </button>
-    </form>
+    <div>
+      <form onSubmit={handleSubmit} style={{ marginBottom: '15px' }}>
+        <input
+          type="text"
+          placeholder="Buscar por marca"
+          value={termino}
+          onChange={(e) => setTermino(e.target.value)}
+        />
+        <button type="submit">{modoBuscar ? 'Buscar' : 'Limpiar'}</button>
+      </form>
+
+      {buscar && (
+        productosFiltrados.length > 0 ? (
+          <ul>
+            {productosFiltrados.map(p => (
+              <li key={p.id}>
+                {p.id} - {p.producto} - {p.marca} - ${p.precio} - {p.descuento}% - ${p.precioConDesc} - {p.stock}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No se encontraron productos con esa descripción.</p>
+        )
+      )}
+    </div>
   );
 }
 

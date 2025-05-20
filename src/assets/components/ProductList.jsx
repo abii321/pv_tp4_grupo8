@@ -1,4 +1,5 @@
-function ProductList({ productos, eliminarProducto }) {
+
+function ProductList({ productos, eliminarProducto, setProductoEditado }) {
     return (
         <div>
             <table>
@@ -11,6 +12,7 @@ function ProductList({ productos, eliminarProducto }) {
                         <th>Descuento</th>
                         <th>Precio con Descuento</th>
                         <th>Stock</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
 
@@ -18,22 +20,24 @@ function ProductList({ productos, eliminarProducto }) {
                     {
                         productos.map(p =>
                             <tr key={p.id}>
-                                    <td>{p.id} </td>
-                                    <td>{p.producto}</td>
-                                    <td>{p.marca} </td>
-                                    <td>${p.precio}</td>
-                                    <td>{p.descuento}%</td>
-                                    <td>${p.precioConDesc}</td>
-                                    <td>{p.stock}</td>
-                                    <td><button onClick={() => eliminarProducto(p.id)}>Eliminar</button></td>
+                                <td>{p.id}</td>
+                                <td>{p.producto}</td>
+                                <td>{p.marca}</td>
+                                <td>${p.precio}</td>
+                                <td>{p.descuento}%</td>
+                                <td>${p.precioConDesc}</td>
+                                <td>{p.stock}</td>
+                                <td>
+                                    <button onClick={() => eliminarProducto(p.id)}>Eliminar</button>
+                                    <button onClick={() => setProductoEditado(p)}>Editar</button> {/* Nuevo botón */}
+                                </td>
                             </tr>
                         )
                     }
                 </tbody>
             </table>
-
         </div>
     )
 }
 
-export default ProductList
+export default ProductList;

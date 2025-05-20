@@ -45,4 +45,4 @@ function SearchById({ productos, setProductosFiltrados }) {
   );
 }
 
-export default SearchById;
+export default SearchById; 

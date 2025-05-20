@@ -1,51 +1,39 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 
-function SearchBar({ productos }) {
-    const [termino, setTermino] = useState('');
-    const [buscar, setBuscar] = useState('');
+function SearchBar({ productosOriginales, setProductos }) {
+  const [termino, setTermino] = useState('');
+  const [modoBuscar, setModoBuscar] = useState(true); 
 
-    const productosFiltrados = useMemo(() => {
-    return productos.filter(p =>
-        p.descripcion.toLowerCase().includes(buscar.toLowerCase())
-    );
-    }, [productos, buscar]);
-
-    const handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setBuscar(termino);
-    };
 
-    return (
-    <div>
-        <form onSubmit={handleSubmit}>
-        <input
-            type="text"
-            placeholder="Buscar por descripción"
-            value={termino}
-            onChange={(e) => setTermino(e.target.value)}
-        />
-        <button type="submit">Buscar</button>
-        </form>
+    if (modoBuscar) {
+      const filtrados = productosOriginales.filter(p =>
+        p.descripcion.toLowerCase().includes(termino.toLowerCase()) ||
+        p.producto.toLowerCase().includes(termino.toLowerCase())
+      );
+      setProductos(filtrados);
+      setModoBuscar(false);
+    } else {
+      setProductos(productosOriginales);
+      setTermino('');
+      setModoBuscar(true);
+    }
+  };
 
-        {
-        buscar && productosFiltrados.length > 0 && (
-            <ul>
-            {productosFiltrados.map(p => (
-                <li key={p.id}>
-                {p.id} - {p.producto} - {p.descripcion} - ${p.precio} - {p.descuento}% - ${p.precioConDesc} - {p.stock}
-                </li>
-            ))}
-            </ul>
-        )
-        }
-
-        {
-        buscar && productosFiltrados.length === 0 && (
-            <p>No se encontraron productos con esa descripción.</p>
-        )
-        }
-    </div>
-    );
+  return (
+    <form onSubmit={handleSubmit} style={{ marginBottom: '15px' }}>
+      <input
+        type="text"
+        placeholder="Buscar por descripción o marca"
+        value={termino}
+        onChange={(e) => setTermino(e.target.value)}
+      />
+      <button type="submit">
+        {modoBuscar ? 'Buscar' : 'Limpiar'}
+      </button>
+    </form>
+  );
 }
 
 export default SearchBar;
